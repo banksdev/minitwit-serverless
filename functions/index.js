@@ -1,7 +1,7 @@
 const functions = require("firebase-functions");
 const admin = require('firebase-admin');
 
-var crypto = require('crypto');
+const crypto = require('crypto');
 
 // Initialize Firebase App
 admin.initializeApp();
@@ -9,6 +9,11 @@ admin.initializeApp();
 // Database references
 let latestRef = admin.firestore().collection("latest");
 let usersRef = admin.firestore().collection("users");
+
+// TODO: Remove
+// Create latest in test env
+// latestRef.doc("latest").set({"latest": 0});
+
 
 const increment = admin.firestore.FieldValue.increment(1);
 
@@ -30,6 +35,8 @@ exports.getLatest = functions.https.onRequest(async (req, res) => {
 });
 
 exports.register = functions.https.onRequest(async (req,res) => {
+    console.log(req.headers);
+
     const username = req.body.username;
     const email = req.body.username;
     const pwd = req.body.username;
