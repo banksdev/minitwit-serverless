@@ -51,13 +51,12 @@ exports.register = functions.https.onRequest(async (req,res) => {
 
 });
 
-exports.updateLatest = functions.firestore.document('/users/{documentId}')
-    .onCreate(async (snap, context) => { 
-        // Document reference
-        const latest = latestRef.doc('latest');
-        // Update latest count
-        await latest.update({ latest: increment });
-    });
+exports.updateLatest = functions.firestore.document('/users/{documentId}').onCreate(async (snap, context) => { 
+    // Document reference
+    const latest = latestRef.doc('latest');
+    // Update latest count
+    await latest.update({ latest: increment });
+});
 
 
 // exports.updateLatest = functions.https.onRequest(async (req, res) => {
