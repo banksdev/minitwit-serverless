@@ -8,9 +8,6 @@
       "npm --prefix \"$RESOURCE_DIR\" run lint"
     ]
   },
-  "authentication": {
-
-  },
   "hosting": {
     "public": "public",
     "ignore": [
