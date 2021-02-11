@@ -11,7 +11,9 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@master
       - name: Install Dependencies
-        run: npm install
+        run: |
+          cd functions
+          npm install
       - name: Build
         run: npm run build-prod
       - name: Archive Production Artifact
