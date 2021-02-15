@@ -11,44 +11,7 @@ const usersRef = admin.firestore().collection("users");
 const tweetsRef = admin.firestore().collection('tweets');
 const followsRef = admin.firestore().collection('follows');
 
-// USERNAME = 'simulator'
-// PWD = 'super_safe!'
-// CREDENTIALS = ':'.join([USERNAME, PWD]).encode('ascii')
-// ENCODED_CREDENTIALS = base64.b64encode(CREDENTIALS).decode()
-// HEADERS = {'Connection': 'close',
-//            'Content-Type': 'application/json',
-//            f'Authorization': f'Basic {ENCODED_CREDENTIALS}'}
-
-async function InitializeTestEnv(res) {
-    await latestRef.doc("latest").create({"latest": 0});
-
-    // await tweetsRef.doc().set({
-    //     'pub_date': admin.firestore.Timestamp.fromDate(new Date()),
-    //     'content': "Hello! World",
-    //     'username': "a",
-    //     'flagged': false 
-    // });
-    // await tweetsRef.doc().set({
-    //     'pub_date': admin.firestore.Timestamp.fromDate(new Date()),
-    //     'content': "Hello! World 2",
-    //     'username': "b",
-    //     'flagged': false 
-    // });
-
-    res.send(200);
-    // usersRef.doc().set({
-    //     'username': 'a',
-    //     'email': 'a',
-    //     'pwd': sha256("password")
-    // });
-    // usersRef.doc().set({
-    //     'username': 'b',
-    //     'email': 'b',
-    //     'pwd': sha256("qwerty123")
-    // });
-}
-
-
+// Increment field value
 const increment = admin.firestore.FieldValue.increment(1);
 
 function sha256(data) {
@@ -77,9 +40,7 @@ function validAuthorization(req, res) {
     return true;
 }
 
-exports.init = functions.https.onRequest(async (req,res) => InitializeTestEnv(res))
-
-exports.latest = functions.https.onRequest(async (req, res) => {
+exports.latest = functions.region('europe-west1').https.onRequest(async (req, res) => {
     functions.logger.info("Getting latest...", {structuredData: true});
     const latestDoc = await latestRef.doc('latest').get();
     if (!latestDoc.exists) {
@@ -92,7 +53,7 @@ exports.latest = functions.https.onRequest(async (req, res) => {
     res.send({"latest": latest});
 });
 
-exports.register = functions.https.onRequest(async (req,res) => {
+exports.register = functions.region('europe-west1').https.onRequest(async (req,res) => {
     await updateLatest(req.query.latest);
 
     const username = req.body.username;
@@ -155,7 +116,7 @@ async function handleMsgPostUser(username, tweet, res, defaultLimit) {
 
 }
 
-exports.msgs = functions.https.onRequest(async (req, res) => {
+exports.msgs = functions.region('europe-west1').https.onRequest(async (req, res) => {
     await updateLatest(req.query.latest);
 
     if (!validAuthorization(req, res))
@@ -244,7 +205,7 @@ async function handleFollowPost(req, res) {
     }
 }
 
-exports.fllws = functions.https.onRequest(async (req, res) => {
+exports.fllws = functions.region('europe-west1').https.onRequest(async (req, res) => {
     if (req.params[0] == '/')
     {
         res.status(404).send("Please specify username.")
